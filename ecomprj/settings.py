@@ -33,7 +33,7 @@ ALLOWED_HOSTS = ['fabbio96.pythonanywhere.com']
 
 INSTALLED_APPS = [
     'jazzmin',
-    'django.contrib.admin',
+    #'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
