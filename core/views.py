@@ -29,13 +29,10 @@ def index(request):
 
 def product_list_view(request):
     products = Product.objects.filter(product_status="published").order_by("-id")
-    #tags = Tag.objects.all().order_by("-id")[:6]
 
     context = {
         "products": products,
-        #"tags":tags,
     }
-
     return render(request, 'core/product-list.html', context)
 
 def category_list_view(request):
@@ -90,7 +87,8 @@ def product_detail_view(request, pid):
         if user_review_count > 0:
             make_review = False
     
-    address = "Login To Continue"
+    else:
+        address = "Login To Continue"
 
     p_image = product.p_images.all()
 
@@ -195,6 +193,28 @@ def search_view(request):
         "query": query,
     }
     return render(request, "core/search.html", context)
+
+def search_category_view(request):
+    query = request.GET.get("c")
+
+    categories = Category.objects.filter(title__icontains=query).order_by("title")
+
+    context = {
+        "categories": categories,
+        "query": query,
+    }
+    return render(request, "core/search-category.html", context)
+
+def search_vendor_view(request):
+    query = request.GET.get("v")
+
+    vendors = Vendor.objects.filter(title__icontains=query).order_by("title")
+
+    context = {
+        "vendors": vendors,
+        "query": query,
+    }
+    return render(request, "core/search-vendor.html", context)
 
 def filter_product(request):
     categories = request.GET.getlist("category[]")

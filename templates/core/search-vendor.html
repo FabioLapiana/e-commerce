@@ -1,0 +1,78 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+    <main class="main">
+        <div class="page-header mt-30 mb-50">
+            <div class="container">
+                <div class="archive-header">
+                    <div class="row align-items-center">
+                        <div class="col-xl-3">
+                            {% if query %}
+                            <h1 class="mb-15">{{ query.title }}</h1>
+                            {% else %}
+                            <h3 class="mb-15">No Searched Vendor</h3>
+                            {% endif %}
+                            <div class="breadcrumb">
+                                <a href="{% url 'core:index' %}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                                <span></span> Shop <span></span> {{ query.title }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container mb-30">
+            <div class="row">
+                <div class="col-12">
+                    <div class="shop-product-fillter">
+                        <div class="totall-product">
+                            <p>We found <strong class="text-brand">{{ vendors.count }}</strong> vendor{{ vendors.count|pluralize }} for you!</p>
+                        </div>
+                    </div>
+                    <div class="row product-grid">
+                        {% for v in vendors %}
+                        <div class="col-lg-6 col-md-6 col-12 col-sm-6">
+                            <div class="vendor-wrap style-2 mb-40">
+                                <div class="product-badges product-badges-position product-badges-mrg">
+                                </div>
+                                <div class="vendor-img-action-wrap">
+                                    <div class="vendor-img">
+                                        <a href="{% url 'core:vendor-detail' v.vid %}">
+                                            <img class="default-img" src="{{ v.image.url }}" alt="" />
+                                        </a>
+                                    </div>
+                                    <div class="mt-10">
+                                        <span class="font-small total-product">{{ v.product.all.count }} Product{{ v.product.all.count|pluralize }}</span>
+                                    </div>
+                                </div>
+                                <div class="vendor-content-wrap">
+                                    <div class="mb-30">
+                                        <div class="product-category">
+                                            <span class="text-muted">Since {{ v.date|date:'Y' }}</span>
+                                        </div>
+                                        <h4 class="mb-5"><a href="{% url 'core:vendor-detail' v.vid %}">{{ v.title }}</a></h4>
+                                        <div class="product-rate-cover">
+                                            <div class="product-rate d-inline-block">
+                                                <div class="product-rating" style="width: {{ v.authentic_rating }}%"></div>
+                                            </div>
+                                            <span class="font-small ml-5 text-muted"> {{ v.authentic_rating }}%</span>
+                                        </div>
+                                        <div class="vendor-info d-flex justify-content-between align-items-end mt-30">
+                                            <ul class="contact-infor text-muted">
+                                                <li><img src="assets/imgs/theme/icons/icon-location.svg" alt="" /><strong>Address: </strong> <span>{{ v.address }}</span></li>
+                                                <li><img src="assets/imgs/theme/icons/icon-contact.svg" alt="" /><strong>Call Us:</strong><span>{{ v.contact }}</span></li>
+                                            </ul>
+                                        </div>
+                                        <br>
+                                        <a href="{% url 'core:vendor-detail' v.vid %}" class="btn btn-xs">Visit Store <i class="fi-rs-arrow-small-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    {% endblock content %}

@@ -20,6 +20,8 @@ urlpatterns = [
     path('ajax-add-review/<int:pid>', views.ajax_add_review, name='ajax-add-review'),
 
     path('search/', views.search_view, name='search'),
+    path('search-category/', views.search_category_view, name='search-category'),
+    path('search-vendor/', views.search_vendor_view, name='search-vendor'),
 
     path("filter-products/", views.filter_product, name="filter-product"),
 
