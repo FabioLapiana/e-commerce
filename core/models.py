@@ -5,6 +5,7 @@ from django.utils.html import mark_safe
 from userauths.models import User
 from taggit.managers import TaggableManager
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.db.models import Avg
 
 STATUS_CHOICE = (
     ("processing", "Processing"),
@@ -82,7 +83,6 @@ class Product(models.Model):
     
     title = models.CharField(max_length=100, default="Product")
     image = models.ImageField(upload_to="user_directory_path", default="product.jpg")
-    #description = models.TextField(null=True, blank=True, default="Product")
     description = RichTextUploadingField(null=True, blank=True, default="Product")
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -91,14 +91,12 @@ class Product(models.Model):
 
     price = models.DecimalField(max_digits=9999999, decimal_places=2, default="1")
     old_price = models.DecimalField(max_digits=9999999, decimal_places=2, default="2")
-    #specifications = models.TextField(null=True, blank=True, default="_")
     specifications = RichTextUploadingField(null=True, blank=True, default="_")
     type = models.CharField(max_length=100, default="Type", blank=True, null=True)
     stock_count = models.CharField(max_length=100, default="-", blank=True, null=True)
     life = models.CharField(max_length=100, default="100 Days", blank=True, null=True)
     mfd = models.DateTimeField(auto_now_add=False, blank=True, null=True)
     tags = TaggableManager(blank=True)
-    #tags = models.ForeignKey(Tags, on_delete=models.SET_NULL, null=True)
     product_status = models.CharField(choices=STATUS, max_length=10, default="in_review")
     status = models.BooleanField(default=True)
     in_stock = models.BooleanField(default=True)
@@ -122,6 +120,16 @@ class Product(models.Model):
     def get_percentage(self):
         new_price = ((self.old_price - self.price) / self.old_price) * 100
         return new_price
+    
+    def get_total_reviews(self):
+        return self.reviews.count()
+    
+    def average_rating(self):
+        # Calcola la media dei rating delle recensioni associate al prodotto
+        average_rating = self.reviews.aggregate(Avg('rating'))['rating__avg']
+        
+        # Restituisci la media, se presente, altrimenti restituisci 0 o un altro valore di default
+        return average_rating if average_rating is not None else 0
     
 class ProductImages(models.Model):
     images = models.ImageField(upload_to="product-images", default="product.jpg")
@@ -196,7 +204,7 @@ class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     mobile = models.CharField(max_length=300, null=True)
     address = models.CharField(max_length=100, null=True)
-    status = models.BooleanField(default=False)
+    status = models.BooleanField(default=True)
 
     class Meta:
         verbose_name_plural = "Address"

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Third Party
     'taggit',
     'ckeditor',
+    'mathfilters',
 
     # Payment
     'paypal.standard.ipn',

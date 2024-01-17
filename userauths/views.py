@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
-from userauths.forms import UserRegisterForm, ProfileForm
-from django.contrib.auth import login, authenticate, logout
+from userauths.forms import UserRegisterForm, ProfileForm, ChangePasswordForm
+from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib import messages
 from django.conf import settings
 from userauths.models import User, Profile
-
-# User = settings.AUTH_USER_MODEL
+from django.contrib.auth.decorators import login_required
 
 def register_view(request):
     if request.method == "POST":
@@ -75,3 +74,32 @@ def profile_update(request):
     }
 
     return render(request, "userauths/profile-edit.html", context)
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            current_password = form.cleaned_data['current_password']
+            new_password = form.cleaned_data['new_password']
+            confirm_password = form.cleaned_data['confirm_password']
+
+            # Verifica che la password corrente sia corretta
+            if not request.user.check_password(current_password):
+                messages.error(request, 'Current password is incorrect.')
+            elif new_password != confirm_password:
+                messages.error(request, 'New password and confirm password do not match.')
+            else:
+                # Cambia la password dell'utente
+                request.user.set_password(new_password)
+                request.user.save()
+
+                # Aggiorna la sessione di autenticazione
+                update_session_auth_hash(request, request.user)
+
+                messages.success(request, 'Password changed successfully.')
+                return redirect('core:index')
+    else:
+        form = ChangePasswordForm()
+
+    return render(request, 'userauths/change-password.html', {'form': form})

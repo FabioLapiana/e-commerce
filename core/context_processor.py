@@ -29,3 +29,12 @@ def default(request):
         'min_max_price': min_max_price,
         'wishlist': wishlist,
     }
+
+# def average_rating_prc(request):
+#     if 'pid' in request.GET:
+#         pid = request.GET['pid']
+#         product = Product.objects.get(pid=pid)
+#         average_rating_prc = ProductReview.objects.filter(product=product).aggregate(rating=Avg('rating')*20)
+#         return {'average_rating_prc': average_rating_prc}
+#     else:
+#         return {}

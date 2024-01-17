@@ -20,7 +20,7 @@ class Profile(models.Model):
     full_name = models.CharField(max_length=200, null=True, blank=True)
     bio = models.CharField(max_length=200, null=True, blank=True)
     phone = models.CharField(max_length=200) 
-    verified = models.BooleanField(default=False)
+    verified = models.BooleanField(default=True)
     
     def __str__(self):
         return f"{self.user.username} - {self.full_name} - {self.bio}"

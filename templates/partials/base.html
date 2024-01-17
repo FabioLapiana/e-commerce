@@ -30,34 +30,6 @@
 </head>
 
 <body>
-    <!-- Quick view -->
-    <div class="modal fade custom-modal" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-12 col-xs-12 mb-md-0 mb-sm-5">
-                            <div class="detail-gallery">
-                                <span class="zoom-icon"><i class="fi-rs-search"></i></span>
-                                <!-- THUMBNAILS -->
-                                <div class="slider-nav-thumbnails">
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-3.jpg' %}" alt="product image" /></div>
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-4.jpg' %}" alt="product image" /></div>
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-5.jpg' %}" alt="product image" /></div>
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-6.jpg' %}" alt="product image" /></div>
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-7.jpg' %}" alt="product image" /></div>
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-8.jpg' %}" alt="product image" /></div>
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-9.jpg' %}" alt="product image" /></div>
-                                </div>
-                            </div>
-                            <!-- End Gallery -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <header class="header-area header-style-1 header-height-2">
         <div class="header-top header-top-ptb-1 d-none d-lg-block">
             <div class="container">
@@ -85,7 +57,7 @@
                     <div class="col-xl-3 col-lg-4">
                         <div class="header-info header-info-right">
                             <ul>
-                                <li>Need help? Call Us: <strong class="text-brand"> + 1800 900</strong></li>
+                                <li>Need help? Call Us: <strong class="text-brand">3334567891</strong></li>
                                 <li>
                                     <a class="language-dropdown-active" href="#">English <i class="fi-rs-angle-small-down"></i></a>
                                     <ul class="language-dropdown">
@@ -170,13 +142,15 @@
                                     <a href="{% url 'core:dashboard' %}"><span class="lable ml-0">Account</span></a>
                                     <div class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
                                         <ul>
-                                            <li><a href="{% url 'core:dashboard' %}"><i class="fi fi-rs-user mr-10"></i>My Account</a></li>
-                                            <li><a href="page-forgot-password.html"><i class="fi fi-rs-user mr-10"></i>Forgot password</a></li>
-                                            <li><a href="page-reset-password.html"><i class="fi fi-rs-user mr-10"></i>Reset password</a></li>
-                                            <li><a href="{% url 'core:wishlist' %}"><i class="fi fi-rs-heart mr-10"></i>My Wishlist</a></li>
                                             {% if request.user.is_authenticated %}
+                                                <li><a href="#">  Hello {{ request.user }}</a></li>
+                                                <hr>
+                                                <li><a href="{% url 'core:dashboard' %}"><i class="fi fi-rs-user mr-10"></i>My Account</a></li>
+                                                <li><a href="{% url 'core:wishlist' %}"><i class="fi fi-rs-heart mr-10"></i>My Wishlist</a></li>
+                                                <li><a href="{% url 'userauths:change-password' %}"><i class="fi fi-rs-user mr-10"></i>Change password</a></li>
                                                 <li><a href="{% url 'userauths:sign-out' %}"><i class="fi fi-rs-sign-out mr-10"></i>Sign out</a></li>
                                             {% else %}
+                                                <li><a href="page-forgot-password.html"><i class="fi fi-rs-user mr-10"></i>Forgot password</a></li>
                                                 <li><a href="{% url 'userauths:sign-in' %}"><i class="fi fi-rs-sign-in mr-10"></i>Sign in</a></li>
                                             {% endif %}
                                         </ul>
@@ -242,9 +216,8 @@
                                     <li>
                                         <a href="#">Pages <i class="fi-rs-angle-down"></i></a>
                                         <ul class="sub-menu">
-                                            <li><a href="{% url 'core:about_us' %}">About Us</a></li>
-                                            <li><a href="{% url 'core:contact' %}">Contact</a></li>
                                             <li><a href="{% url 'core:dashboard' %}">My Account</a></li>
+                                            <li><a href="{% url 'core:about_us' %}">About Us</a></li>
                                             <li><a href="{% url 'core:purchase_guide' %}">Purchase Guide</a></li>
                                             <li><a href="{% url 'core:privacy_policy' %}">Privacy Policy</a></li>
                                             <li><a href="{% url 'core:terms_of_service' %}">Terms of Service</a></li>

@@ -15,14 +15,23 @@ from django.core import serializers
 
 from django.urls import reverse
 from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
 
 def index(request):
     products = Product.objects.filter(product_status="published", featured=True).order_by("-id")
-
+    latest_products = Product.objects.order_by('-date')[:3]
+    top_rated_products = Product.objects.annotate(reviews_count=Count('reviews')).order_by('-reviews_count')[:3]
+    cheapest_products = Product.objects.filter(product_status="published").order_by('price')[:3]
+    
+    sorted_products = sorted(products, key=lambda x: x.get_percentage(), reverse=True)
+    highest_discount_products = sorted_products[:3]
+    
     context = {
-        "products": products
+        "products": products,
+        "latest_products": latest_products,
+        "top_rated_products": top_rated_products,
+        "cheapest_products": cheapest_products,
+        "highest_discount_products": highest_discount_products,
     }
 
     return render(request, 'core/index.html', context)
@@ -80,35 +89,34 @@ def product_detail_view(request, pid):
     review_form = ProductReviewForm()
     make_review = True 
 
-    if request.user.is_authenticated:
-        address = Address.objects.get(status=True, user=request.user)
-        user_review_count = ProductReview.objects.filter(user=request.user, product=product).count()
+    address = None
 
+    if request.user.is_authenticated:
+        if Address.objects.filter(status=True, user=request.user).exists():
+            address = Address.objects.get(status=True, user=request.user)
+        
+        user_review_count = ProductReview.objects.filter(user=request.user, product=product).count()
         if user_review_count > 0:
             make_review = False
-    
     else:
         address = "Login To Continue"
 
     p_image = product.p_images.all()
 
-    #########
     average_rating_prc = ProductReview.objects.filter(product=product).aggregate(rating=Avg('rating')*20)
     stars_count = reviews.values('rating').annotate(count=Count('rating')).order_by('rating')
-    # Trova il dizionario corrispondente al rating 1 nel queryset
+    # Trova il dizionario corrispondente al rating nel queryset
     rating_1_dict = next((item for item in stars_count if item['rating'] == 1), {'count': 0})
     rating_2_dict = next((item for item in stars_count if item['rating'] == 2), {'count': 0})
     rating_3_dict = next((item for item in stars_count if item['rating'] == 3), {'count': 0})
     rating_4_dict = next((item for item in stars_count if item['rating'] == 4), {'count': 0})
     rating_5_dict = next((item for item in stars_count if item['rating'] == 5), {'count': 0})
-
-    # Ottieni il conteggio del rating 1
+    # Ottieni il conteggio del rating
     count_rating_1 = rating_1_dict['count']
     count_rating_2 = rating_2_dict['count']
     count_rating_3 = rating_3_dict['count']
     count_rating_4 = rating_4_dict['count']
     count_rating_5 = rating_5_dict['count']
-
     # Calcola la percentuale
     if reviews.count() > 0:
         review_prc_1 = (count_rating_1 / reviews.count()) * 100
@@ -118,9 +126,6 @@ def product_detail_view(request, pid):
         review_prc_5 = (count_rating_5 / reviews.count()) * 100
     else:
         review_prc_1 = review_prc_2 = review_prc_3 = review_prc_4 = review_prc_5 = 0
-
-    
-    #############
 
     context = {
         "product": product,
