@@ -6,13 +6,7 @@
                 <a href="{% url 'core:product-detail' p.pid %}">
                     <img class="default-img" src="{{ p.image.url }}" alt="" style="height: 280px; width: 280px; object-fit: cover;"   />
                     <img class="hover-img" src="{{ p.image.url }}" alt=""  style="height: 280px; width: 280px; object-fit: cover;"  />
-
                 </a>
-            </div>
-            <div class="product-action-1">
-                <a aria-label="Add To Wishlist"  class="action-btn add-to-wishlist" data-product-item="{{p.id}}"><i class="fi-rs-heart"></i></a>
-                <!-- <a aria-label="Compare" class="action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a> -->
-                <a href="{% url 'core:product-detail' p.pid %}" class="action-btn"><i class="fi-rs-eye"></i></a>
             </div>
             <div class="product-badges product-badges-position product-badges-mrg">
                 <span class="hot">-{{p.get_precentage|floatformat:0}}%</span>
@@ -24,11 +18,10 @@
             </div>
             <h2><a href="{% url 'core:product-detail' p.pid %}">{{ p.title }}</a></h2>
             <div class="product-rate-cover">
-                <!-- <div class="product-rate d-inline-block"> -->
-                    <!-- <div class="product-rating" style="width: 20%"></div> -->
-                <!-- </div> -->
-                <i class="fas fa-star text-warning"></i>
-                <span class="font-small ml-5 text-muted"> ({{ p.reviews.all.count }})</span>
+                <div class="product-rate d-inline-block">
+                    <div class="product-rating" style="width: {{ p.average_rating|mul:20 }}%"></div>
+                </div>
+                <span class="font-small ml-5 text-muted">{{ p.get_total_reviews }} review{{ p.get_total_reviews|pluralize }}</span>
             </div>
             <div>
                 <span class="font-small text-muted">By <a href="{% url 'core:vendor-detail' p.vendor.vid %}">{{p.vendor.title}}</a></span>
